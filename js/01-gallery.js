@@ -29,7 +29,45 @@ basicLightbox. Используй CDN сервис jsdelivr и добавь в �
 */
 //todo__________________________________________________________
 
+const mainGalleryBox = document.querySelector('.gallery');
+mainGalleryBox.addEventListener('click', onClick);
 
+function onClick(e) {
+e.preventDefault();
 
+if (e.target.nodeName !== 'IMG') {
+    return;
+}
+const instance = basicLightbox.create(
+    `<img width="800" height="600" src="${e.target.dataset.source}" />`
+);
+instance.show();
+mainGalleryBox.addEventListener('keydown', onEscClose);
+function onEscClose(e) {
+    if (e.code === 'Escape') {
+        instance.close();
+        requestAnimationFrame.gallery.removeEventListener('keydown', onEscClose);
+    }
+}
+  // console.log("🚀 ~ e", e.target.nodeName)  что бы узнать имя на чем происходит событие
+}
 
-console.log(galleryItems);
+const images = galleryItems.map(({ preview, original, description }) => {
+const createdImage = `
+        <div class="gallery__item">
+            <a class="gallery__link" href="${original}">
+                <img 
+                    class="gallery__image"
+                    src="${preview}"
+                    data-source="${original}"
+                    alt="${description}"
+                />
+            </a>
+        </div>`;
+  //   console.log('🚀 ~ createdImage', createdImage);
+return createdImage;
+});
+
+mainGalleryBox.insertAdjacentHTML('beforeend', images.join(''));
+
+// console.log(galleryItems);
