@@ -32,28 +32,8 @@ basicLightbox. Используй CDN сервис jsdelivr и добавь в �
 const mainGalleryBox = document.querySelector('.gallery');
 mainGalleryBox.addEventListener('click', onClick);
 
-function onClick(e) {
-e.preventDefault();
-
-if (e.target.nodeName !== 'IMG') {
-    return;
-}
-const instance = basicLightbox.create(
-    `<img width="800" height="600" src="${e.target.dataset.source}" />`
-);
-instance.show();
-mainGalleryBox.addEventListener('keydown', onEscClose);
-function onEscClose(e) {
-    if (e.code === 'Escape') {
-        instance.close();
-        requestAnimationFrame.gallery.removeEventListener('keydown', onEscClose);
-    }
-}
-  // console.log("🚀 ~ e", e.target.nodeName)  что бы узнать имя на чем происходит событие
-}
-
 const images = galleryItems.map(({ preview, original, description }) => {
-const createdImage = `
+  const createdImage = `
         <div class="gallery__item">
             <a class="gallery__link" href="${original}">
                 <img 
@@ -65,9 +45,31 @@ const createdImage = `
             </a>
         </div>`;
   //   console.log('🚀 ~ createdImage', createdImage);
-return createdImage;
+  return createdImage;
 });
 
 mainGalleryBox.insertAdjacentHTML('beforeend', images.join(''));
 
-// console.log(galleryItems);
+const instance = basicLightbox.create(
+  `<img width="800" height="600"/>`
+);
+console.log("🚀 ~ instance", instance)
+
+function onClick(e) {
+  e.preventDefault();
+    const neededImg = e.target.dataset.source;
+
+  if (e.target.nodeName !== 'IMG') {
+    return;
+    }  
+    instance.element().querySelector('img').src = neededImg;
+    console.log("🚀 ~ instance.element()", instance.element())
+  instance.show();
+  mainGalleryBox.addEventListener('keydown', onEscClose);
+  function onEscClose(e) {
+    if (e.code === 'Escape') {
+      instance.close();
+      mainGalleryBox.removeEventListener('keydown', onEscClose);
+    }
+  }
+};
